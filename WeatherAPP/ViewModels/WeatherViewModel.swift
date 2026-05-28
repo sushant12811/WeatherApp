@@ -15,10 +15,12 @@ final class WeatherViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var cityName = "Toronto"
 
-    private let service:  WeatherServiceProtocol
+    private let service: any WeatherServiceProtocol
 
-    init(service:  WeatherServiceProtocol = WeatherService()) {
-        self.service = service
+    /// Pass `MockWeatherService()` in previews/tests. Default builds `WeatherService()` inside
+    /// this initializer so we don't call a MainActor-isolated `init()` from a default argument.
+    init(service: (any WeatherServiceProtocol)? = nil) {
+        self.service = service ?? WeatherService()
     }
 
     func fetchWeather() {
